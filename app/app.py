@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 import asyncio
 import os
+import sys
 from services.github_service import (
     create_github_repo,
     enable_github_pages,
@@ -15,6 +16,16 @@ from services.llm_generator import generate_files
 from services.evaluation import post_results
 from dotenv import load_dotenv
 from pathlib import Path
+
+# Force unbuffered output for Render logs
+import logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+sys.stdout.reconfigure(line_buffering=True)
+sys.stderr.reconfigure(line_buffering=True)
 
 # Load .env from project root so we can read DEFAULT_REPO_PRIVATE without importing app.config
 env_path = Path(__file__).resolve().parents[1] / ".env"
