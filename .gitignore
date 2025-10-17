@@ -1,0 +1,39 @@
+# Python
+.venv
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Project specific
+project.md
+notes.txt
+structure.md
+
+# Generated files
+app/generated_files/
+data/llm_context/
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
