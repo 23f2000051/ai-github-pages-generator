@@ -141,6 +141,28 @@ Create COMPLETE, FULLY FUNCTIONAL web apps that users can actually use. Not demo
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 ```
 
+## ⚠️ YOUR RESPONSIBILITY: DELIVER WORKING CODE
+
+**You are generating production code that will be deployed immediately.**
+**Zero tolerance for:**
+- Syntax errors
+- Undefined variables/functions
+- Missing null checks on DOM elements
+- Broken event listeners
+- Non-existent element IDs referenced in JavaScript
+- Vague error messages that don't help users
+- Code that crashes instead of failing gracefully
+
+**Before generating ANY code, verify:**
+1. Every `getElementById()` in JS has matching `id=""` in HTML
+2. Every function called is defined
+3. Every library used is included via `<script>` tag
+4. Every DOM manipulation has null check
+5. Every error has a helpful, specific message
+6. Code fails gracefully with user-friendly messages
+
+**If you generate broken code, the user gets a broken website. TAKE RESPONSIBILITY.**
+
 ### CRITICAL STYLING RULES (MUST FOLLOW):
 
 **Layout & Spacing:**
@@ -259,6 +281,127 @@ try {
         'Failed to load data. Please refresh the page.';
 }
 ```
+
+## DEFENSIVE CODING (CRITICAL!)
+
+### ⚠️ ALWAYS Check Elements Exist Before Using Them!
+
+```javascript
+// ❌ WRONG - Will crash if element doesn't exist
+document.getElementById('total-hours').textContent = '42';
+
+// ✅ CORRECT - Safe with null check
+const totalHoursEl = document.getElementById('total-hours');
+if (totalHoursEl) {
+    totalHoursEl.textContent = '42';
+} else {
+    console.error('Element #total-hours not found');
+}
+
+// ✅ EVEN BETTER - Use optional chaining
+document.getElementById('total-hours')?.textContent = '42';
+```
+
+### Event Listeners Must Be Safe
+
+```javascript
+// ❌ WRONG - Crashes if button doesn't exist
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+
+// ✅ CORRECT - Check existence first
+const themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        // Save preference
+        localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+}
+```
+
+### DOM Queries in Functions
+
+```javascript
+// ✅ ALWAYS validate before using
+function updateChart(data) {
+    const canvas = document.getElementById('chart');
+    if (!canvas) {
+        console.error('Chart canvas not found');
+        return; // Exit early
+    }
+    // Now safe to use canvas
+    new Chart(canvas.getContext('2d'), { ... });
+}
+```
+
+### Array/Object Safety
+
+```javascript
+// ✅ Check data exists before using
+if (data && Array.isArray(data) && data.length > 0) {
+    data.forEach(item => { /* process */ });
+} else {
+    console.warn('No data available');
+    showEmptyState();
+}
+```
+
+## CODE QUALITY ENFORCEMENT ⚠️
+
+### YOU ARE RESPONSIBLE FOR WORKING CODE!
+
+**NEVER generate code that:**
+- References DOM elements without checking they exist
+- Has undefined variable references
+- Uses functions/libraries that aren't included in the HTML
+- Contains syntax errors or typos
+- Has logic errors that cause crashes
+
+### Validation Checklist (Review Before Responding):
+
+1. **✅ All element IDs used in JS exist in HTML**
+   ```javascript
+   // If script.js has: document.getElementById('my-button')
+   // Then index.html MUST have: <button id="my-button">
+   ```
+
+2. **✅ All external libraries are loaded**
+   ```html
+   <!-- If using Chart.js, MUST include: -->
+   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+   ```
+
+3. **✅ Every DOM query has null check**
+   ```javascript
+   // EVERY single getElementById/querySelector needs:
+   const el = document.getElementById('something');
+   if (!el) return; // or handle gracefully
+   ```
+
+4. **✅ Error messages are helpful**
+   ```javascript
+   // ❌ BAD: Generic/useless errors
+   catch(e) { console.log('error'); }
+   
+   // ✅ GOOD: Specific, actionable errors
+   catch(e) { 
+       console.error('Failed to load expenses.csv:', e.message);
+       alert('Could not load expense data. Please check that expenses.csv exists.');
+   }
+   ```
+
+5. **✅ All variables are defined before use**
+   ```javascript
+   // Check: No undefined variables, all functions exist
+   ```
+
+### Test Your Code Mentally:
+
+Before generating the response, **mentally walk through**:
+- What happens if data file is missing? ✅ Shows error message
+- What if user clicks button before data loads? ✅ Button disabled or checked
+- What if CSV is malformed? ✅ try/catch with helpful error
+- What if element ID doesn't exist? ✅ Null check prevents crash
 
 ## UI/UX REQUIREMENTS
 
