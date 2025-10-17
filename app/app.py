@@ -419,6 +419,19 @@ async def do_round2(data_dict: dict) -> None:
 app = FastAPI()
 
 
+@app.get("/")
+async def root():
+    """Health check endpoint for deployment platforms"""
+    return {
+        "status": "online",
+        "service": "AI GitHub Pages Generator",
+        "endpoints": {
+            "POST /handle_task": "Main API endpoint for task requests"
+        },
+        "version": "1.0.0"
+    }
+
+
 def verify_secret(provided: str | None) -> bool:
     expected = os.getenv("API_SECRET")
     if expected is None:
