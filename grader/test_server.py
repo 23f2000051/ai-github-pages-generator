@@ -27,74 +27,90 @@ NGROK_URL = "https://unvivacious-runny-oswaldo.ngrok-free.dev"  # ← UPDATE THI
 ROUND1_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "minimal-timer-app",
+    "task": "weather-widget",
     "round": 1,
-    "nonce": "20251022-03",
+    "nonce": "20251022-06",
     "brief": """
-Create a MINIMAL countdown timer app with the following requirements:
+Create a simple weather information widget with the following requirements:
 
 REQUIREMENTS:
-1. User can set minutes and seconds for the countdown.
-2. Start, pause, and reset buttons to control the timer.
-3. Display the remaining time in large, easy-to-read format.
-4. Play a simple alert sound or show a visual notification when time is up.
-5. Include a README.md with setup and usage instructions.
+1. Display weather data from the provided weather_data.json file
+2. Show current temperature, conditions, humidity, wind speed
+3. Display a 5-day forecast with daily highs and lows
+4. Show weather icons/emojis for different conditions (sunny ☀️, rainy 🌧️, cloudy ☁️)
+5. Include location info from the JSON file
+6. Include a README.md with setup and usage instructions
 
 DESIGN:
-- Use simple HTML and CSS only (no frameworks).
-- Center the timer on the page.
-- Clean and minimal design with good contrast.
-- Responsive for mobile and desktop.
-- No unnecessary features or styling.
+- Use simple HTML and CSS (no frameworks required, but Bootstrap optional)
+- Clean, card-based layout
+- Center the widget on the page
+- Responsive for mobile and desktop
+- Use appropriate colors (blue for cool, orange for warm, etc.)
 
-No external dependencies required (use Web Audio API for alert sound if needed).
+DATA FILE:
+- weather_data.json: Contains current weather and 5-day forecast
+
+CRITICAL:
+- Fetch and parse the JSON file dynamically (no hardcoding)
+- Display all forecast days
+- Show loading state while fetching
+- Handle fetch errors gracefully
 """,
     "checks": [
         "Repo has MIT license",
         "README.md contains 'Usage' or 'Setup' section",
-        "Page has input fields for minutes and seconds",
-        "Page has Start, Pause, and Reset buttons",
-        "Timer displays remaining time clearly",
-        "Timer alerts when countdown reaches zero",
-        "All logic is in JavaScript (no libraries)",
-        "No external CSS or JS frameworks used",
-        "Timer is centered and responsive"
+        "Page fetches weather_data.json dynamically",
+        "Current temperature displayed",
+        "Current conditions displayed",
+        "Humidity and wind speed shown",
+        "5-day forecast displayed",
+        "Weather icons/emojis used",
+        "Location info shown",
+        "Loading state displayed while fetching",
+        "Error handling for failed fetch",
+        "Page is responsive"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
-    "attachments": []
+    "attachments": [
+        {
+            "name": "weather_data.json",
+            "url": "data:application/json;base64,eyJsb2NhdGlvbiI6IlNhbiBGcmFuY2lzY28sIENBIiwiY3VycmVudCI6eyJ0ZW1wZXJhdHVyZSI6NjgsImNvbmRpdGlvbiI6InN1bm55IiwiaHVtaWRpdHkiOjY1LCJ3aW5kX3NwZWVkIjoxMn0sImZvcmVjYXN0IjpbeyJkYXkiOiJNb25kYXkiLCJoaWdoIjo3MiwibG93Ijo1OCwiY29uZGl0aW9uIjoic3VubnkifSx7ImRheSI6IlR1ZXNkYXkiLCJoaWdoIjo2OSwibG93Ijo1NSwiY29uZGl0aW9uIjoiY2xvdWR5In0seyJkYXkiOiJXZWRuZXNkYXkiLCJoaWdoIjo2NSwibG93Ijo1MywiY29uZGl0aW9uIjoicmFpbnkifSx7ImRheSI6IlRodXJzZGF5IiwiaGlnaCI6NjcsImxvdyI6NTQsImNvbmRpdGlvbiI6ImNsb3VkeSJ9LHsiZGF5IjoiRnJpZGF5IiwiaGlnaCI6NzAsImxvdyI6NTYsImNvbmRpdGlvbiI6InN1bm55In1dfQ=="
+        }
+    ]
 }
 
-# Round 2 Payload - Modifies existing timer app
+# Round 2 Payload - Modifies existing weather widget
 ROUND2_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "minimal-timer-app",
+    "task": "weather-widget",
     "round": 2,
-    "nonce": "20251022-03",  # same repo as round 1
+    "nonce": "20251022-06",  # same repo as round 1
     "brief": """
 ROUND 2 MODIFICATIONS:
 
-Enhance the minimal timer app with the following updates:
+Enhance the weather widget with the following updates:
 
-1. Add preset timer buttons (1 min, 5 min, 10 min, 25 min).
-2. Add a dark mode toggle button.
-3. Save the last used timer settings to localStorage.
-4. Add a progress bar showing time remaining visually.
-5. Update README.md to document new features.
+1. Add a dark mode toggle button
+2. Add temperature unit toggle (Fahrenheit ↔ Celsius)
+3. Add hourly forecast section (use sample data if not in JSON)
+4. Add "feels like" temperature
+5. Update README.md to document new features
 
 KEEP EXISTING:
-- All existing features must remain functional.
-- Maintain minimal, framework-free design.
-- No external dependencies added.
+- All existing weather display features must remain functional
+- Keep data fetching from JSON file
+- Maintain responsive design
 """,
     "checks": [
-        "Page has preset timer buttons (1, 5, 10, 25 minutes)",
-        "Page contains button for dark mode toggle",
-        "Timer settings persist using localStorage",
-        "Visual progress bar shows time remaining",
+        "Page has dark mode toggle button",
+        "Temperature unit toggle present (F/C)",
+        "Hourly forecast section displayed",
+        "Feels like temperature shown",
         "README.md documents new features",
-        "All original timer functions still work",
-        "No external CSS or JS frameworks used"
+        "All original weather data still displayed",
+        "JSON file still fetched dynamically"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
     "attachments": []

@@ -601,7 +601,7 @@ DO NOT add explanations, just return the JSON."""
       "https://aipipe.org/openai/v1/responses",
       headers={"Authorization": f"Bearer {AIPIPE_API_KEY}", "Content-Type": "application/json"},
       json={"model": AIPIPE_MODEL, "input": review_prompt},
-      timeout=120
+      timeout=300
     )
     response.raise_for_status()
     data = response.json()
@@ -771,7 +771,7 @@ Generate the complete web app as JSON now:"""
     "https://aipipe.org/openai/v1/responses",
     headers={"Authorization": f"Bearer {AIPIPE_API_KEY}", "Content-Type": "application/json"},
     json={"model": AIPIPE_MODEL, "input": prompt},
-    timeout=120
+    timeout=300
   )
   response.raise_for_status()
   data = response.json()
