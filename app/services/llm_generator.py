@@ -470,12 +470,11 @@ Update README with new features
 
 ## OUTPUT FORMAT
 
-Return ONLY a valid JSON object. NO markdown fences, NO explanations, NO extra text.
+⚠️ **CRITICAL: YOU MUST RETURN EXACTLY THIS JSON STRUCTURE - NO EXCEPTIONS!** ⚠️
 
-IMPORTANT: In index.html, add this EXACT comment at the top of <body> tag:
-<!-- Generated: TIMESTAMP -->
-Replace TIMESTAMP with current Unix timestamp (e.g., 1234567890). This helps verify deployments.
+Your response MUST be a JSON object with a "files" array. Each file has "path" and "content".
 
+**MANDATORY STRUCTURE:**
 ```json
 {
   "files": [
@@ -486,6 +485,45 @@ Replace TIMESTAMP with current Unix timestamp (e.g., 1234567890). This helps ver
   ]
 }
 ```
+
+**IMPORTANT RULES:**
+1. ✅ The top-level object MUST have exactly ONE key: "files"
+2. ✅ "files" MUST be an array of file objects
+3. ✅ Each file object MUST have "path" (string) and "content" (string)
+4. ✅ Return ONLY this JSON - NO markdown code fences, NO extra text
+5. ⚠️ If the task asks you to create files like "data.json" with specific content, that content goes INSIDE the "content" field, NOT as a top-level key!
+
+**EXAMPLE - If asked to create a JSON file:**
+If the brief says "Create dilemma.json with people, case_1, case_2 fields":
+
+❌ WRONG (Don't return the JSON structure directly):
+```json
+{
+  "people": [...],
+  "case_1": {...},
+  "case_2": {...}
+}
+```
+
+✅ CORRECT (Wrap it in the files array):
+```json
+{
+  "files": [
+    {
+      "path": "dilemma.json",
+      "content": "{\"people\": [...], \"case_1\": {...}, \"case_2\": {...}}"
+    },
+    {
+      "path": "index.html",
+      "content": "<!DOCTYPE html>..."
+    }
+  ]
+}
+```
+
+**In index.html, add this EXACT comment at the top of <body> tag:**
+<!-- Generated: TIMESTAMP -->
+Replace TIMESTAMP with current Unix timestamp (e.g., 1234567890). This helps verify deployments.
 
 ## QUALITY CHECKLIST (Verify before returning):
 - [ ] All attachment files are fetched (not hardcoded)
@@ -612,6 +650,10 @@ END OF PREVIOUS CODE
 {round_info}{context_info}
 
 TASK: {brief}{checks_info}{attachment_info}
+
+⚠️ REMINDER: Your response MUST be a JSON object with ONE key "files" containing an array.
+If the task asks you to create JSON/CSV/TXT files, their content goes INSIDE the "content" field of the files array.
+DO NOT return the data structure directly - always wrap in the required format!
 
 Generate the complete web app as JSON now:"""
   
