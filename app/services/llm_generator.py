@@ -492,6 +492,11 @@ Your response MUST be a JSON object with a "files" array. Each file has "path" a
 3. ✅ Each file object MUST have "path" (string) and "content" (string)
 4. ✅ Return ONLY this JSON - NO markdown code fences, NO extra text
 5. ⚠️ If the task asks you to create files like "data.json" with specific content, that content goes INSIDE the "content" field, NOT as a top-level key!
+6. ⚠️ **CRITICAL: Escape all backslashes, quotes, and special characters properly in JSON strings!**
+   - Use \\\\ for backslash
+   - Use \\" for quotes inside strings
+   - Use \\n for newlines, \\t for tabs
+   - ALL string content must be valid JSON-escaped
 
 **EXAMPLE - If asked to create a JSON file:**
 If the brief says "Create dilemma.json with people, case_1, case_2 fields":
@@ -705,7 +710,35 @@ Generate the complete web app as JSON now:"""
     json_str = text[start:end]
     print(f"[LLM] Extracted JSON: {len(json_str)} chars")
     
-    result = json.loads(json_str)
+    # Try to parse JSON with standard parser first
+    try:
+      result = json.loads(json_str)
+    except json.JSONDecodeError as parse_error:
+      # If standard parsing fails, try to fix common escape issues
+      print(f"[LLM] ⚠️ Initial parse failed: {parse_error}")
+      print(f"[LLM] Attempting to fix escape sequences...")
+      
+      # Common fixes for invalid escapes
+      # Fix single backslashes that aren't valid escape sequences
+      import re
+      
+      # Replace invalid escape sequences (but preserve valid ones like \n, \t, \", \\, etc.)
+      # This regex finds backslashes followed by characters that aren't valid escape chars
+      fixed_json = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', json_str)
+      
+      try:
+        result = json.loads(fixed_json)
+        print(f"[LLM] ✅ Fixed escape sequences successfully")
+      except json.JSONDecodeError as e2:
+        # If still failing, show detailed error context
+        print(f"[LLM] ❌ Still failed after escape fix: {e2}")
+        print(f"[LLM] Error at position {e2.pos}")
+        if e2.pos:
+          start_pos = max(0, e2.pos - 100)
+          end_pos = min(len(fixed_json), e2.pos + 100)
+          print(f"[LLM] Context around error:")
+          print(fixed_json[start_pos:end_pos])
+        raise ValueError(f"Failed to parse LLM JSON response: {e2}")
     
     if "files" not in result:
       print(f"[LLM] ❌ Response missing 'files' key!")

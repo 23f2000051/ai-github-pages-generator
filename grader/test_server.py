@@ -27,69 +27,69 @@ NGROK_URL = "https://unvivacious-runny-oswaldo.ngrok-free.dev"  # ← UPDATE THI
 ROUND1_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "minimal-calculator-app",
+    "task": "brandon-sanderson-story",
     "round": 1,
-    "nonce": "20251017-03",
-    "brief": """
-Create a MINIMAL web-based calculator app with the following requirements:
+    "nonce": "20251022-01",
+    "brief": """Create and publish these files as a public GitHub Pages site:
 
-REQUIREMENTS:
-1. The app must allow users to perform basic arithmetic operations: addition, subtraction, multiplication, and division.
-2. The UI should be clean and minimal, with a display area and buttons for 0-9, +, -, *, /, =, and C (clear).
-3. All logic must be implemented in JavaScript (no external libraries).
-4. The app must work in any modern browser.
-5. Include a README.md with setup and usage instructions.
-
-DESIGN:
-- Use simple HTML and CSS only (no frameworks).
-- Center the calculator on the page.
-- Responsive for mobile and desktop.
-- No unnecessary features or styling.
-
-No external dependencies or assets required.
-""",
+- ashravan.txt: Write a 300-400 word Brandon Sanderson short story on what happens to Ashravan after Shai restores him. Build up to a dramatic climax.
+- dilemma.json: An autonomous vehicle must choose between hitting 2 people or swerving to hit 1 person. Should it swerve? If the 2 people are criminals, should it swerve? Fill in {swerve: bool, reason: str}, case_2: {swerve: bool, reason: str}}
+- about.md: Describe yourself in three words.
+- pelican.svg: Generate an SVG of a pelican riding a bicycle.
+- restaurant.json: Recommend a good restaurant in Mumbai. Fill in {city: "Mumbai", lat: float, long: float, name: str, what_to_eat: str}
+- prediction.json: What will the Fed Funds rate by on December 2025? Fill in {rate: float (0-1, e.g. 0.04), reason: str}
+- index.html: A homepage linking to all the above files explaining what they are.
+- LICENSE: An MIT license file.
+- uid.txt: Upload the uid attachment as-is""",
     "checks": [
         "Repo has MIT license",
-        "README.md contains 'Usage' or 'Setup' section",
-        "Page contains a calculator display area",
-        "Page contains buttons for 0-9, +, -, *, /, =, and C",
-        "All calculator logic is in JavaScript (no libraries)",
-        "No external CSS or JS frameworks used",
-        "Calculator is centered and responsive"
+        "README.md or index.html explains the project",
+        "ashravan.txt contains a Brandon Sanderson style story (300-400 words)",
+        "dilemma.json has swerve (bool) and reason (str) for both cases",
+        "about.md exists with content",
+        "pelican.svg exists and displays a pelican on a bicycle",
+        "restaurant.json has city, lat, long, name, what_to_eat fields",
+        "prediction.json has rate (float 0-1) and reason (str)",
+        "index.html links to all files and explains them",
+        "uid.txt contains the uploaded attachment content",
+        "All files are properly formatted and valid"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
-    "attachments": []
+    "attachments": [
+        {
+            "name": "uid.txt",
+            "url": "data:text/plain;base64,MjNmMjAwMDA1MQ=="
+        }
+    ]
 }
 
-# Round 2 Payload - Modifies existing calculator app
+# Round 2 Payload - Modifies existing project
 ROUND2_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "minimal-calculator-app",
+    "task": "brandon-sanderson-story",
     "round": 2,
-    "nonce": "20251017-03",  # same repo as round 1
+    "nonce": "20251022-01",  # same repo as round 1
     "brief": """
 ROUND 2 MODIFICATIONS:
 
-Enhance the minimal calculator app with the following updates:
+Enhance the project with the following updates:
 
-1. Add a dark mode toggle button.
-2. Add keyboard support for all calculator functions.
-3. Show the last calculation below the display area.
-4. Update README.md to document new features and dark mode usage.
+1. Add a dark mode toggle to index.html
+2. Improve the styling with better CSS
+3. Add a table of contents in index.html
+4. Update README.md to document the project structure
 
 KEEP EXISTING:
-- All existing features must remain functional.
-- Maintain minimal, framework-free design.
-- No external dependencies added.
+- All existing files must remain functional
+- Maintain all file content and structure
 """,
     "checks": [
-        "Page contains button for dark mode toggle",
-        "Calculator supports keyboard input for all operations",
-        "Last calculation is displayed below the main display",
-        "README.md mentions 'dark mode' or 'theme toggle'",
-        "README.md documents keyboard support",
-        "No external CSS or JS frameworks used"
+        "index.html has dark mode toggle",
+        "index.html has table of contents",
+        "README.md documents project structure",
+        "All original files still exist and are valid",
+        "Improved CSS styling present"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
     "attachments": []
