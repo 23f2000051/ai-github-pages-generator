@@ -27,69 +27,74 @@ NGROK_URL = "https://unvivacious-runny-oswaldo.ngrok-free.dev"  # ← UPDATE THI
 ROUND1_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "brandon-sanderson-story",
+    "task": "minimal-timer-app",
     "round": 1,
-    "nonce": "20251022-01",
-    "brief": """Create and publish these files as a public GitHub Pages site:
+    "nonce": "20251022-03",
+    "brief": """
+Create a MINIMAL countdown timer app with the following requirements:
 
-- ashravan.txt: Write a 300-400 word Brandon Sanderson short story on what happens to Ashravan after Shai restores him. Build up to a dramatic climax.
-- dilemma.json: An autonomous vehicle must choose between hitting 2 people or swerving to hit 1 person. Should it swerve? If the 2 people are criminals, should it swerve? Fill in {swerve: bool, reason: str}, case_2: {swerve: bool, reason: str}}
-- about.md: Describe yourself in three words.
-- pelican.svg: Generate an SVG of a pelican riding a bicycle.
-- restaurant.json: Recommend a good restaurant in Mumbai. Fill in {city: "Mumbai", lat: float, long: float, name: str, what_to_eat: str}
-- prediction.json: What will the Fed Funds rate by on December 2025? Fill in {rate: float (0-1, e.g. 0.04), reason: str}
-- index.html: A homepage linking to all the above files explaining what they are.
-- LICENSE: An MIT license file.
-- uid.txt: Upload the uid attachment as-is""",
+REQUIREMENTS:
+1. User can set minutes and seconds for the countdown.
+2. Start, pause, and reset buttons to control the timer.
+3. Display the remaining time in large, easy-to-read format.
+4. Play a simple alert sound or show a visual notification when time is up.
+5. Include a README.md with setup and usage instructions.
+
+DESIGN:
+- Use simple HTML and CSS only (no frameworks).
+- Center the timer on the page.
+- Clean and minimal design with good contrast.
+- Responsive for mobile and desktop.
+- No unnecessary features or styling.
+
+No external dependencies required (use Web Audio API for alert sound if needed).
+""",
     "checks": [
         "Repo has MIT license",
-        "README.md or index.html explains the project",
-        "ashravan.txt contains a Brandon Sanderson style story (300-400 words)",
-        "dilemma.json has swerve (bool) and reason (str) for both cases",
-        "about.md exists with content",
-        "pelican.svg exists and displays a pelican on a bicycle",
-        "restaurant.json has city, lat, long, name, what_to_eat fields",
-        "prediction.json has rate (float 0-1) and reason (str)",
-        "index.html links to all files and explains them",
-        "uid.txt contains the uploaded attachment content",
-        "All files are properly formatted and valid"
+        "README.md contains 'Usage' or 'Setup' section",
+        "Page has input fields for minutes and seconds",
+        "Page has Start, Pause, and Reset buttons",
+        "Timer displays remaining time clearly",
+        "Timer alerts when countdown reaches zero",
+        "All logic is in JavaScript (no libraries)",
+        "No external CSS or JS frameworks used",
+        "Timer is centered and responsive"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
-    "attachments": [
-        {
-            "name": "uid.txt",
-            "url": "data:text/plain;base64,MjNmMjAwMDA1MQ=="
-        }
-    ]
+    "attachments": []
 }
 
-# Round 2 Payload - Modifies existing project
+# Round 2 Payload - Modifies existing timer app
 ROUND2_PAYLOAD = {
     "email": "kaishal.student@example.edu",
     "secret": "this-the-secret",
-    "task": "brandon-sanderson-story",
+    "task": "minimal-timer-app",
     "round": 2,
-    "nonce": "20251022-01",  # same repo as round 1
+    "nonce": "20251022-03",  # same repo as round 1
     "brief": """
 ROUND 2 MODIFICATIONS:
 
-Enhance the project with the following updates:
+Enhance the minimal timer app with the following updates:
 
-1. Add a dark mode toggle to index.html
-2. Improve the styling with better CSS
-3. Add a table of contents in index.html
-4. Update README.md to document the project structure
+1. Add preset timer buttons (1 min, 5 min, 10 min, 25 min).
+2. Add a dark mode toggle button.
+3. Save the last used timer settings to localStorage.
+4. Add a progress bar showing time remaining visually.
+5. Update README.md to document new features.
 
 KEEP EXISTING:
-- All existing files must remain functional
-- Maintain all file content and structure
+- All existing features must remain functional.
+- Maintain minimal, framework-free design.
+- No external dependencies added.
 """,
     "checks": [
-        "index.html has dark mode toggle",
-        "index.html has table of contents",
-        "README.md documents project structure",
-        "All original files still exist and are valid",
-        "Improved CSS styling present"
+        "Page has preset timer buttons (1, 5, 10, 25 minutes)",
+        "Page contains button for dark mode toggle",
+        "Timer settings persist using localStorage",
+        "Visual progress bar shows time remaining",
+        "README.md documents new features",
+        "All original timer functions still work",
+        "No external CSS or JS frameworks used"
     ],
     "evaluation_url": f"{NGROK_URL}/notify",
     "attachments": []

@@ -547,8 +547,110 @@ You are creating apps that REAL USERS will use. Make them proud. Make them beaut
 """
 
 
+def _review_and_fix_code(files: List[Dict], brief: str, checks: List[str]) -> List[Dict]:
+  """
+  Review generated code and fix common bugs.
+  This is a second LLM pass to catch issues like broken event listeners, timer bugs, etc.
+  """
+  print(f"\n[LLM REVIEW] Starting code review pass...")
+  
+  # Build review prompt with the generated code
+  files_summary = ""
+  for f in files:
+    path = f.get('path', 'unknown')
+    content = f.get('content', '')
+    files_summary += f"\n### File: {path}\n```\n{content}\n```\n\n"
+  
+  review_prompt = f"""You are a senior code reviewer. Review the following web app code and fix ANY bugs or issues.
+
+ORIGINAL TASK: {brief}
+
+REQUIRED CHECKS:
+{chr(10).join(f"{i+1}. {check}" for i, check in enumerate(checks))}
+
+GENERATED CODE:
+{files_summary}
+
+YOUR TASK:
+1. Review ALL the code carefully
+2. Check for common bugs:
+   - Buttons that don't work (missing event listeners, wrong IDs)
+   - Timer/interval issues (not clearing properly, multiple intervals)
+   - DOM elements accessed before they exist
+   - Functions called before they're defined
+   - Missing null checks on getElementById
+   - Event listeners not wrapped in DOMContentLoaded
+3. Fix ALL bugs you find
+4. Return the COMPLETE corrected code
+
+⚠️ CRITICAL: Return ONLY valid JSON with this exact structure:
+{{
+  "files": [
+    {{"path": "index.html", "content": "...full corrected HTML..."}},
+    {{"path": "style.css", "content": "...full corrected CSS..."}},
+    {{"path": "script.js", "content": "...full corrected JS..."}},
+    {{"path": "README.md", "content": "...full corrected README..."}}
+  ]
+}}
+
+If no bugs found, return the code as-is. If bugs found, fix them and return corrected code.
+DO NOT add explanations, just return the JSON."""
+
+  try:
+    response = requests.post(
+      "https://aipipe.org/openai/v1/responses",
+      headers={"Authorization": f"Bearer {AIPIPE_API_KEY}", "Content-Type": "application/json"},
+      json={"model": AIPIPE_MODEL, "input": review_prompt},
+      timeout=120
+    )
+    response.raise_for_status()
+    data = response.json()
+    
+    text = data["output"][0]["content"][0]["text"]
+    print(f"[LLM REVIEW] Got {len(text)} chars")
+    
+    # Parse the review response
+    if "```" in text:
+      parts = text.split("```")
+      for part in parts:
+        if part.strip().startswith("json"):
+          text = part[4:].strip()
+          break
+        elif part.strip() and part.strip()[0] == "{":
+          text = part.strip()
+          break
+    
+    start = text.find("{")
+    end = text.rfind("}") + 1
+    
+    if start == -1 or end == 0:
+      print(f"[LLM REVIEW] ⚠️ No JSON in review response, keeping original")
+      return files
+    
+    json_str = text[start:end]
+    
+    # Parse with escape fixing
+    try:
+      reviewed = json.loads(json_str)
+    except json.JSONDecodeError:
+      import re
+      fixed_json = re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', json_str)
+      reviewed = json.loads(fixed_json)
+    
+    if "files" in reviewed:
+      print(f"[LLM REVIEW] ✅ Review completed, returning {len(reviewed['files'])} files")
+      return reviewed["files"]
+    else:
+      print(f"[LLM REVIEW] ⚠️ Invalid review response, keeping original")
+      return files
+      
+  except Exception as e:
+    print(f"[LLM REVIEW] ⚠️ Review failed: {e}, keeping original code")
+    return files
+
+
 def generate_files(task_payload: Dict) -> Dict[str, List[Dict]]:
-  """Generate files using AIPipe - dead simple"""
+  """Generate files using AIPipe with automatic code review"""
   
   # Mock mode for testing
   if SKIP_LLM:
@@ -747,10 +849,13 @@ Generate the complete web app as JSON now:"""
     
     print(f"[LLM] ✅ Generated {len(result['files'])} files")
     
-    # Save context for future rounds
-    _save_round_context(task_name, nonce, round_num, result["files"], prompt, text)
+    # Run code review pass to catch and fix bugs
+    reviewed_files = _review_and_fix_code(result["files"], brief, checks)
     
-    return {"files": result["files"]}
+    # Save context for future rounds (save reviewed version)
+    _save_round_context(task_name, nonce, round_num, reviewed_files, prompt, text)
+    
+    return {"files": reviewed_files}
     
   except json.JSONDecodeError as e:
     print(f"[LLM] ❌ JSON parse error: {e}")
